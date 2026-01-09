@@ -1,0 +1,12 @@
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/app_icon.png"
+  min_sdk_android: 21
+  
+  # Android specific
+  adaptive_icon_background: "#E4002B"
+  adaptive_icon_foreground: "assets/app_icon.png"
+  
+  # Remove alpha channel for Android
+  remove_alpha_ios: true
