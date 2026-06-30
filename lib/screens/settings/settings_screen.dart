@@ -86,7 +86,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: const Icon(
@@ -116,7 +116,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         trailing: Switch(
                           value: themeProvider.isDarkMode,
                           onChanged: (value) => themeProvider.setDarkMode(value),
-                          activeColor: const Color(0xFFE4002B),
+                          activeThumbColor: const Color(0xFFE4002B),
                         ),
                         isDark: isDark,
                       ),
@@ -130,7 +130,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         trailing: Switch(
                           value: _autoLogin,
                           onChanged: _setAutoLogin,
-                          activeColor: const Color(0xFFE4002B),
+                          activeThumbColor: const Color(0xFFE4002B),
                         ),
                         isDark: isDark,
                       ),
@@ -186,7 +186,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -197,7 +197,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: const Color(0xFFE4002B).withOpacity(0.1),
+              color: const Color(0xFFE4002B).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: const Color(0xFFE4002B)),

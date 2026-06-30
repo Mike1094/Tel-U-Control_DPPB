@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'config/api_config.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/home/home_screen.dart';
 import 'services/auth_service.dart';
 import 'services/settings_service.dart';
 import 'services/theme_provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize API config
+  await ApiConfig.init();
+
   runApp(
     ChangeNotifierProvider(
       create: (_) => ThemeProvider()..loadSettings(),
@@ -33,10 +39,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.light,
         ),
         useMaterial3: true,
-        appBarTheme: const AppBarTheme(
-          centerTitle: true,
-          elevation: 0,
-        ),
+        appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0),
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -54,12 +57,8 @@ class MyApp extends StatelessWidget {
           foregroundColor: Colors.white,
         ),
         scaffoldBackgroundColor: const Color(0xFF121212),
-        cardTheme: const CardThemeData(
-          color: Color(0xFF1E1E1E),
-        ),
-        dialogTheme: const DialogThemeData(
-          backgroundColor: Color(0xFF1E1E1E),
-        ),
+        cardTheme: const CardThemeData(color: Color(0xFF1E1E1E)),
+        dialogTheme: const DialogThemeData(backgroundColor: Color(0xFF1E1E1E)),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
           fillColor: const Color(0xFF2C2C2C),
@@ -105,18 +104,19 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _checkAuth() async {
     await Future.delayed(const Duration(seconds: 2));
-    
+
     final isLoggedIn = await AuthService.isLoggedIn();
     final autoLoginEnabled = await SettingsService.getAutoLogin();
-    
+
     if (mounted) {
       // If logged in AND auto-login is enabled, go to home
       // Otherwise, go to login
       final shouldAutoLogin = isLoggedIn && autoLoginEnabled;
-      
+
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (_) => shouldAutoLogin ? const HomeScreen() : const LoginScreen(),
+          builder: (_) =>
+              shouldAutoLogin ? const HomeScreen() : const LoginScreen(),
         ),
       );
     }
@@ -130,10 +130,7 @@ class _SplashScreenState extends State<SplashScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFE4002B),
-              Color(0xFFB80024),
-            ],
+            colors: [Color(0xFFE4002B), Color(0xFFB80024)],
           ),
         ),
         child: Center(
@@ -147,7 +144,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
+                      color: Colors.black.withValues(alpha: 0.2),
                       blurRadius: 30,
                       offset: const Offset(0, 15),
                     ),
@@ -174,7 +171,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 'Civitas Akademika',
                 style: TextStyle(
                   fontSize: 18,
-                  color: Colors.white.withOpacity(0.9),
+                  color: Colors.white.withValues(alpha: 0.9),
                 ),
               ),
               const SizedBox(height: 48),
@@ -193,4 +190,3 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 }
-

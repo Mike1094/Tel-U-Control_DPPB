@@ -105,7 +105,7 @@ class _LaporanFormScreenState extends State<LaporanFormScreen> {
               // Header Card
               Card(
                 elevation: 0,
-                color: Colors.orange.withOpacity(0.1),
+                color: Colors.orange.withValues(alpha: 0.1),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),

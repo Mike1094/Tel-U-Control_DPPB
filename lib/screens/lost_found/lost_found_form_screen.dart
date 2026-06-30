@@ -115,7 +115,7 @@ class _LostFoundFormScreenState extends State<LostFoundFormScreen> {
               // Header Card
               Card(
                 elevation: 0,
-                color: color.withOpacity(0.1),
+                color: color.withValues(alpha: 0.1),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -304,7 +304,7 @@ class _LostFoundFormScreenState extends State<LostFoundFormScreen> {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: isSelected
-              ? color.withOpacity(0.1)
+              ? color.withValues(alpha: 0.1)
               : (Theme.of(context).brightness == Brightness.dark
                   ? const Color(0xFF2C2C2C)
                   : Colors.grey[100]),

@@ -1,3 +1,5 @@
+import '../config/api_config.dart';
+
 /// Lost & Found item model
 class LostFound {
   final int? id;
@@ -5,7 +7,7 @@ class LostFound {
   final String namaBarang;
   final String lokasi;
   final String deskripsi;
-  final String? foto;
+  final String? _rawFoto; // Raw path from API
   final String? status;
   final int? userId;
   final int? linkedLostId;
@@ -18,13 +20,29 @@ class LostFound {
     required this.namaBarang,
     required this.lokasi,
     required this.deskripsi,
-    this.foto,
+    String? foto,
     this.status,
     this.userId,
     this.linkedLostId,
     this.createdAt,
     this.updatedAt,
-  });
+  }) : _rawFoto = foto;
+
+  /// Get the full image URL based on current server configuration
+  String? get foto {
+    if (_rawFoto == null || _rawFoto.isEmpty) return null;
+    
+    // If it's already a full URL, return as-is
+    if (_rawFoto.startsWith('http://') || _rawFoto.startsWith('https://')) {
+      return _rawFoto;
+    }
+    
+    // Use ApiConfig helper to construct the correct URL
+    return ApiConfig.getImageUrl(_rawFoto);
+  }
+  
+  /// Get raw foto path (for internal use)
+  String? get rawFoto => _rawFoto;
 
   /// Safe int parsing - handles both int and String from JSON
   static int? _parseInt(dynamic value) {
@@ -35,6 +53,17 @@ class LostFound {
   }
 
   factory LostFound.fromJson(Map<String, dynamic> json) {
+    // Get raw image path based on server type
+    String? rawImagePath;
+    
+    if (ApiConfig.isProductionServer()) {
+      // Production: use 'foto' field (raw path) and construct URL ourselves
+      rawImagePath = json['foto']?.toString();
+    } else {
+      // Local: try foto_url first (full URL from accessor), fallback to foto
+      rawImagePath = json['foto_url']?.toString() ?? json['foto']?.toString();
+    }
+    
     return LostFound(
       id: _parseInt(json['id']),
       jenis: json['jenis']?.toString() ?? 'hilang',
@@ -43,7 +72,7 @@ class LostFound {
       // Laravel uses 'lokasi_ditemukan'
       lokasi: json['lokasi_ditemukan']?.toString() ?? json['lokasi']?.toString() ?? '',
       deskripsi: json['deskripsi']?.toString() ?? '',
-      foto: json['foto']?.toString(),
+      foto: rawImagePath,
       status: json['status']?.toString(),
       userId: _parseInt(json['user_id']),
       linkedLostId: _parseInt(json['linked_lost_id']),
@@ -64,7 +93,7 @@ class LostFound {
       // Send as 'lokasi_ditemukan' as Laravel expects
       'lokasi_ditemukan': lokasi,
       'deskripsi': deskripsi,
-      if (foto != null) 'foto': foto,
+      if (_rawFoto != null) 'foto': _rawFoto,
       if (status != null) 'status': status,
       if (linkedLostId != null) 'linked_lost_id': linkedLostId,
     };
@@ -89,7 +118,7 @@ class LostFound {
       namaBarang: namaBarang ?? this.namaBarang,
       lokasi: lokasi ?? this.lokasi,
       deskripsi: deskripsi ?? this.deskripsi,
-      foto: foto ?? this.foto,
+      foto: foto ?? _rawFoto,
       status: status ?? this.status,
       userId: userId ?? this.userId,
       linkedLostId: linkedLostId ?? this.linkedLostId,
